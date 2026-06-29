@@ -30,14 +30,17 @@ export class ChatService {
   async chat(dto: ChatMessageDto): Promise<{ reply: string }> {
     if (!this.genAI) {
       return {
-        reply: 'Xin chào! Tôi là trợ lý PawCam Pro. Hiện tại API key chưa được cấu hình. Vui lòng liên hệ hotline 1800 xxxx để được tư vấn trực tiếp!',
+        reply:
+          'Xin chào! Tôi là trợ lý PawCam Pro. Hiện tại API key chưa được cấu hình. Vui lòng liên hệ hotline 1800 xxxx để được tư vấn trực tiếp!',
       };
     }
 
     try {
-      const model = this.genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
-      
-      const history = (dto.history || []).map(h => ({
+      const model = this.genAI.getGenerativeModel({
+        model: 'gemini-2.0-flash',
+      });
+
+      const history = (dto.history || []).map((h) => ({
         role: h.role === 'user' ? 'user' : 'model',
         parts: [{ text: h.content }],
       }));
@@ -45,7 +48,10 @@ export class ChatService {
       const chat = model.startChat({
         history: [
           { role: 'user', parts: [{ text: PRODUCT_CONTEXT }] },
-          { role: 'model', parts: [{ text: 'Tôi đã hiểu. Tôi sẽ tư vấn về PawCam Pro.' }] },
+          {
+            role: 'model',
+            parts: [{ text: 'Tôi đã hiểu. Tôi sẽ tư vấn về PawCam Pro.' }],
+          },
           ...history,
         ],
       });
